@@ -255,6 +255,75 @@
       color: var(--text-secondary);
     }
 
+    /* ── SCREENSHOTS SECTION ────────────────────────────────────────────── */
+    .screenshots-section { padding: 80px 24px 0; }
+
+    .featured-screenshot {
+      border-radius: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.5);
+      margin-bottom: 16px;
+      position: relative;
+    }
+    .featured-screenshot img {
+      width: 100%;
+      display: block;
+      border-radius: 11px;
+    }
+    .featured-screenshot-label {
+      position: absolute;
+      top: 16px; left: 16px;
+      background: rgba(8,13,24,0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 5px 12px;
+      font-size: 11px;
+      font-family: var(--mono);
+      color: var(--cyan);
+      letter-spacing: 0.06em;
+    }
+
+    .screenshot-thumbs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 80px;
+    }
+    .screenshot-thumb {
+      border-radius: 8px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      cursor: pointer;
+      transition: all 0.2s;
+      position: relative;
+    }
+    .screenshot-thumb:hover {
+      border-color: var(--cyan-border);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .screenshot-thumb img {
+      width: 100%;
+      display: block;
+    }
+    .screenshot-thumb-label {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 20px 10px 8px;
+      background: linear-gradient(transparent, rgba(8,13,24,0.9));
+      font-size: 10px;
+      font-family: var(--mono);
+      color: var(--text-secondary);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    @media (max-width: 768px) {
+      .screenshot-thumbs { grid-template-columns: repeat(2, 1fr); }
+    }
+
     /* ── MODULES SECTION ─────────────────────────────────────────────────── */
     section { padding: 100px 24px; }
 
@@ -527,9 +596,10 @@
       </h1>
 
       <p class="hero-sub">
-        Hana puts ping, traceroute, subnet sweep, DNS lookup, port scanner,
-        and IP info in one clean interface. For IT professionals who'd rather
-        fix the problem than fight their tools.
+        A lightweight network utility that gets out of your way.
+        No bloat, no subscriptions, no setup. Open Hana and you're ready to ping,
+        trace, sweep, scan, and diagnose — whether you're chasing a routing issue,
+        verifying DNS, or mapping what's alive on a subnet.
       </p>
 
       <div class="hero-actions">
@@ -571,6 +641,45 @@
     <span class="platform-badge">🔓 GPL v3 Open Source</span>
   </div>
 
+  <!-- SCREENSHOTS -->
+  <section class="screenshots-section">
+    <div class="container">
+      <div style="text-align:center;margin-bottom:40px">
+        <div class="section-eyebrow" style="justify-content:center;display:flex">See it in action</div>
+        <h2 class="section-title">Built for real network work</h2>
+        <p class="section-sub" style="margin:0 auto">
+          Every module shows results as they arrive — no waiting, no page refreshes.
+        </p>
+      </div>
+
+      <!-- Featured screenshot -->
+      <div class="featured-screenshot">
+        <img src="screenshots/ping.png" alt="Hana Ping module showing continuous ping with live RTT graph" loading="lazy" />
+        <span class="featured-screenshot-label">◎ Ping — Continuous mode with live RTT graph</span>
+      </div>
+
+      <!-- Thumbnail row -->
+      <div class="screenshot-thumbs">
+        <div class="screenshot-thumb">
+          <img src="screenshots/multiping.png" alt="Multi-Ping showing 2 up 1 down" loading="lazy" />
+          <div class="screenshot-thumb-label">⊛ Multi-Ping</div>
+        </div>
+        <div class="screenshot-thumb">
+          <img src="screenshots/sweep.png" alt="Subnet Sweep CIDR scan in progress" loading="lazy" />
+          <div class="screenshot-thumb-label">⊞ Subnet Sweep</div>
+        </div>
+        <div class="screenshot-thumb">
+          <img src="screenshots/portscan.png" alt="Port Scanner results" loading="lazy" />
+          <div class="screenshot-thumb-label">⊘ Port Scanner</div>
+        </div>
+        <div class="screenshot-thumb">
+          <img src="screenshots/dns.png" alt="DNS Lookup results" loading="lazy" />
+          <div class="screenshot-thumb-label">◈ DNS Lookup</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- STATS -->
   <section id="modules">
     <div class="container">
@@ -596,8 +705,7 @@
       <div class="section-eyebrow">What's inside</div>
       <h2 class="section-title">Every tool you reach for,<br/>in one place</h2>
       <p class="section-sub">
-        Nine diagnostic modules built for the workflows IT professionals
-        actually have — not the ones textbooks describe.
+        Everything you need to diagnose, map, and troubleshoot a network — in one window.
       </p>
 
       <div class="modules-grid">
