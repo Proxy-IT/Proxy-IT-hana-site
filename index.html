@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Hana is a free network diagnostic utility for IT professionals. Ping, traceroute, subnet sweep, DNS lookup, port scanner and more — on Windows and Mac." />
+  <meta name="keywords" content="network utility, ping tool, traceroute, subnet sweep, DNS lookup, port scanner, IT tools, Windows, Mac, free" />
+  <title>Hana — Network Utility by Proxy-IT</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:          #080D18;
+      --bg-card:     #0D1525;
+      --bg-elevated: #111827;
+      --border:      #1E2D45;
+      --border-subtle: rgba(30,45,69,0.6);
+      --cyan:        #00D4FF;
+      --cyan-dim:    rgba(0,212,255,0.12);
+      --cyan-border: rgba(0,212,255,0.25);
+      --green:       #00FF9C;
+      --text-primary: #E8EDF5;
+      --text-secondary: #8892A4;
+      --text-muted:  #3D4D65;
+      --mono:        'JetBrains Mono', monospace;
+      --sans:        'Inter', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--bg);
+      color: var(--text-primary);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── NAV ─────────────────────────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px;
+      height: 64px;
+      background: rgba(8,13,24,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .nav-brand {
+      display: flex; align-items: center; gap: 12px;
+      text-decoration: none;
+    }
+    .nav-logo {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 1.5px solid var(--cyan-border);
+      background: var(--bg-card);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .nav-name {
+      font-size: 16px; font-weight: 600; color: var(--text-primary);
+      letter-spacing: -0.02em;
+    }
+    .nav-by {
+      font-size: 11px; color: var(--text-muted);
+      font-family: var(--mono);
+    }
+
+    .nav-links {
+      display: flex; align-items: center; gap: 32px;
+      list-style: none;
+    }
+    .nav-links a {
+      font-size: 13px; color: var(--text-secondary);
+      text-decoration: none; font-weight: 500;
+      transition: color 0.15s;
+    }
+    .nav-links a:hover { color: var(--cyan); }
+
+    .nav-cta {
+      background: var(--cyan-dim);
+      border: 1px solid var(--cyan-border);
+      color: var(--cyan) !important;
+      padding: 7px 18px;
+      border-radius: 6px;
+      font-size: 13px !important;
+      font-weight: 600 !important;
+      transition: all 0.15s !important;
+    }
+    .nav-cta:hover {
+      background: rgba(0,212,255,0.2) !important;
+      color: var(--cyan) !important;
+    }
+
+    /* ── HERO ────────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Ambient grid background */
+    .hero::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        linear-gradient(rgba(0,212,255,0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,212,255,0.03) 1px, transparent 1px);
+      background-size: 48px 48px;
+      mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 0%, transparent 100%);
+    }
+
+    /* Radial glow */
+    .hero::after {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      background: radial-gradient(circle, rgba(0,212,255,0.06) 0%, transparent 70%);
+      top: 50%; left: 50%;
+      transform: translate(-50%, -60%);
+      pointer-events: none;
+    }
+
+    .hero-content { position: relative; z-index: 1; max-width: 760px; }
+
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--cyan-dim);
+      border: 1px solid var(--cyan-border);
+      border-radius: 20px;
+      padding: 5px 14px;
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--cyan);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+    .hero-eyebrow-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--cyan);
+      animation: pulse-dot 2s ease-in-out infinite;
+    }
+
+    .hero-title {
+      font-size: clamp(48px, 8vw, 80px);
+      font-weight: 700;
+      letter-spacing: -0.04em;
+      line-height: 1.05;
+      margin-bottom: 24px;
+      color: var(--text-primary);
+    }
+    .hero-title span {
+      color: var(--cyan);
+    }
+
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-secondary);
+      max-width: 540px;
+      margin: 0 auto 40px;
+      line-height: 1.7;
+      font-weight: 400;
+    }
+
+    .hero-actions {
+      display: flex; align-items: center; justify-content: center;
+      gap: 14px; flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--cyan-dim);
+      border: 1px solid var(--cyan-border);
+      color: var(--cyan);
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-size: 14px; font-weight: 600;
+      text-decoration: none;
+      transition: all 0.15s;
+      font-family: var(--sans);
+      box-shadow: 0 0 24px rgba(0,212,255,0.08);
+    }
+    .btn-primary:hover {
+      background: rgba(0,212,255,0.2);
+      box-shadow: 0 0 32px rgba(0,212,255,0.15);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      padding: 13px 28px;
+      border-radius: 8px;
+      font-size: 14px; font-weight: 500;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn-secondary:hover {
+      border-color: var(--text-muted);
+      color: var(--text-primary);
+    }
+
+    .hero-meta {
+      margin-top: 20px;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      display: flex; align-items: center; justify-content: center; gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-meta-item { display: flex; align-items: center; gap: 6px; }
+    .hero-meta-dot { width: 4px; height: 4px; border-radius: 50%; background: var(--text-muted); }
+
+    /* ── PLATFORM BADGES ─────────────────────────────────────────────────── */
+    .platform-strip {
+      display: flex; align-items: center; justify-content: center;
+      gap: 12px;
+      padding: 40px 24px;
+      border-top: 1px solid var(--border-subtle);
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .platform-label {
+      font-size: 11px; color: var(--text-muted);
+      font-family: var(--mono); text-transform: uppercase; letter-spacing: 0.1em;
+      margin-right: 8px;
+    }
+    .platform-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 12px; font-weight: 500;
+      color: var(--text-secondary);
+    }
+
+    /* ── MODULES SECTION ─────────────────────────────────────────────────── */
+    section { padding: 100px 24px; }
+
+    .container { max-width: 1100px; margin: 0 auto; }
+
+    .section-eyebrow {
+      font-family: var(--mono);
+      font-size: 11px;
+      color: var(--cyan);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-bottom: 12px;
+    }
+
+    .section-title {
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 16px;
+    }
+
+    .section-sub {
+      font-size: 16px;
+      color: var(--text-secondary);
+      max-width: 540px;
+      line-height: 1.7;
+      margin-bottom: 56px;
+    }
+
+    .modules-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+    }
+
+    .module-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 24px;
+      transition: all 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .module-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cyan-border), transparent);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+    .module-card:hover {
+      border-color: var(--cyan-border);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .module-card:hover::before { opacity: 1; }
+
+    .module-icon {
+      font-size: 22px;
+      color: var(--cyan);
+      margin-bottom: 12px;
+      display: block;
+    }
+    .module-name {
+      font-size: 15px; font-weight: 600;
+      margin-bottom: 6px;
+      color: var(--text-primary);
+    }
+    .module-desc {
+      font-size: 13px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+
+    /* ── PRIVACY SECTION ─────────────────────────────────────────────────── */
+    .privacy-section { background: var(--bg-card); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+
+    .privacy-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: center;
+    }
+
+    .privacy-statements { display: flex; flex-direction: column; gap: 16px; }
+
+    .privacy-statement {
+      display: flex; align-items: flex-start; gap: 14px;
+      padding: 16px 20px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+    }
+    .privacy-icon { font-size: 18px; flex-shrink: 0; margin-top: 2px; }
+    .privacy-text { font-size: 13px; color: var(--text-secondary); line-height: 1.6; }
+    .privacy-text strong { color: var(--text-primary); display: block; margin-bottom: 3px; font-size: 14px; }
+
+    /* ── INSTALL SECTION ─────────────────────────────────────────────────── */
+    .install-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+
+    .install-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 32px;
+    }
+
+    .install-platform {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 20px;
+    }
+    .install-platform-icon { font-size: 28px; }
+    .install-platform-name { font-size: 18px; font-weight: 600; }
+
+    .install-steps { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+    .install-step {
+      display: flex; align-items: flex-start; gap: 12px;
+      font-size: 13px; color: var(--text-secondary);
+    }
+    .step-num {
+      width: 22px; height: 22px; border-radius: 50%;
+      background: var(--cyan-dim);
+      border: 1px solid var(--cyan-border);
+      color: var(--cyan);
+      font-size: 11px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+      font-family: var(--mono);
+    }
+
+    .install-note {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--mono);
+      padding: 10px 14px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+
+    /* ── STATS BAR ───────────────────────────────────────────────────────── */
+    .stats-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 80px;
+    }
+    .stat {
+      background: var(--bg-card);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .stat-value {
+      font-size: 32px; font-weight: 700;
+      color: var(--cyan);
+      font-family: var(--mono);
+      letter-spacing: -0.03em;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .stat-label {
+      font-size: 12px; color: var(--text-muted);
+      text-transform: uppercase; letter-spacing: 0.08em;
+    }
+
+    /* ── FOOTER ──────────────────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 24px;
+    }
+    .footer-inner {
+      max-width: 1100px; margin: 0 auto;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 10px; }
+    .footer-brand-text { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+    .footer-brand-sub { font-size: 11px; color: var(--text-muted); }
+
+    .footer-links { display: flex; gap: 24px; list-style: none; }
+    .footer-links a { font-size: 12px; color: var(--text-muted); text-decoration: none; transition: color 0.15s; }
+    .footer-links a:hover { color: var(--cyan); }
+
+    .footer-copy { font-size: 11px; color: var(--text-muted); font-family: var(--mono); }
+
+    /* ── ANIMATIONS ──────────────────────────────────────────────────────── */
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.4; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .hero-content > * {
+      animation: fadeInUp 0.5s ease both;
+    }
+    .hero-eyebrow   { animation-delay: 0.05s; }
+    .hero-title     { animation-delay: 0.15s; }
+    .hero-sub       { animation-delay: 0.25s; }
+    .hero-actions   { animation-delay: 0.35s; }
+    .hero-meta      { animation-delay: 0.45s; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      nav { padding: 0 20px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 20px 60px; }
+      .modules-grid { grid-template-columns: 1fr 1fr; }
+      .privacy-grid { grid-template-columns: 1fr; gap: 32px; }
+      .install-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+      .platform-strip { flex-wrap: wrap; }
+      .footer-inner { flex-direction: column; align-items: flex-start; }
+    }
+    @media (max-width: 480px) {
+      .modules-grid { grid-template-columns: 1fr; }
+      .stats-bar { grid-template-columns: 1fr 1fr; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      * { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a href="https://proxy-it.co" class="nav-brand">
+      <div class="nav-logo"><span style="width:8px;height:8px;border-radius:50%;background:#00D4FF;display:block;box-shadow:0 0 8px rgba(0,212,255,0.6);"></span></div>
+      <div>
+        <div class="nav-name">Hana</div>
+        <div class="nav-by">by Proxy-IT</div>
+      </div>
+    </a>
+    <ul class="nav-links">
+      <li><a href="#modules">Modules</a></li>
+      <li><a href="#privacy">Privacy</a></li>
+      <li><a href="#install">Install</a></li>
+      <li><a href="https://proxy-it.co">Proxy-IT</a></li>
+      <li><a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="nav-cta">↓ Download</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-content">
+      <div class="hero-eyebrow">
+        <span class="hero-eyebrow-dot"></span>
+        Free · Open Source · v1.7.1
+      </div>
+
+      <h1 class="hero-title">
+        Network diagnostics<br/>
+        <span>without the noise</span>
+      </h1>
+
+      <p class="hero-sub">
+        Hana puts ping, traceroute, subnet sweep, DNS lookup, port scanner,
+        and IP info in one clean interface. For IT professionals who'd rather
+        fix the problem than fight their tools.
+      </p>
+
+      <div class="hero-actions">
+        <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-primary">
+          ↓ Download for Windows
+        </a>
+        <a href="https://github.com/Proxy-IT/hana-network-utility" class="btn-secondary">
+          View on GitHub →
+        </a>
+      </div>
+
+      <div class="hero-meta">
+        <span class="hero-meta-item">
+          <span class="hero-meta-dot"></span>
+          Windows &amp; Mac
+        </span>
+        <span class="hero-meta-item">
+          <span class="hero-meta-dot"></span>
+          No telemetry
+        </span>
+        <span class="hero-meta-item">
+          <span class="hero-meta-dot"></span>
+          No ads
+        </span>
+        <span class="hero-meta-item">
+          <span class="hero-meta-dot"></span>
+          No data collection
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- PLATFORM STRIP -->
+  <div class="platform-strip">
+    <span class="platform-label">Available on</span>
+    <span class="platform-badge">🪟 Windows 10 / 11</span>
+    <span class="platform-badge">🍎 macOS Ventura / Sonoma / Sequoia</span>
+    <span class="platform-badge">⚡ Electron 42</span>
+    <span class="platform-badge">🔓 GPL v3 Open Source</span>
+  </div>
+
+  <!-- STATS -->
+  <section id="modules">
+    <div class="container">
+      <div class="stats-bar">
+        <div class="stat">
+          <div class="stat-value">9</div>
+          <div class="stat-label">Modules</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0</div>
+          <div class="stat-label">Telemetry</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0</div>
+          <div class="stat-label">Ads</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">free</div>
+          <div class="stat-label">Always</div>
+        </div>
+      </div>
+
+      <div class="section-eyebrow">What's inside</div>
+      <h2 class="section-title">Every tool you reach for,<br/>in one place</h2>
+      <p class="section-sub">
+        Nine diagnostic modules built for the workflows IT professionals
+        actually have — not the ones textbooks describe.
+      </p>
+
+      <div class="modules-grid">
+        <div class="module-card">
+          <span class="module-icon">◎</span>
+          <div class="module-name">Ping</div>
+          <div class="module-desc">Fixed and continuous ping with real-time RTT graph, packet loss tracking, and live results as each packet responds.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">⊛</span>
+          <div class="module-name">Multi-Ping</div>
+          <div class="module-desc">Monitor up to 5 hosts simultaneously. Cards turn green when responding, red when down. Keeps running while you use other modules.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">⤵</span>
+          <div class="module-name">Traceroute</div>
+          <div class="module-desc">Hop-by-hop path tracing with streaming results and color-coded latency per hop.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">⊞</span>
+          <div class="module-name">Subnet Sweep</div>
+          <div class="module-desc">Ping-sweep a range or CIDR subnet to discover live hosts. Supports /16 through /30 with paginated results and stop-scan control.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">⊟</span>
+          <div class="module-name">Subnet Calculator</div>
+          <div class="module-desc">Full CIDR breakdown — network address, broadcast, host range, usable hosts, and binary view.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">⊕</span>
+          <div class="module-name">IP Info</div>
+          <div class="module-desc">Detect your public IP, look up geolocation for any IP, and query WhoIs and RDAP records for any domain.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">◈</span>
+          <div class="module-name">DNS Lookup</div>
+          <div class="module-desc">Resolve A, AAAA, CNAME, MX, TXT, NS, and PTR records using Google, Cloudflare, or your own internal DNS server.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">⊘</span>
+          <div class="module-name">Port Scanner</div>
+          <div class="module-desc">TCP port scanning with pre-filled common ports, group presets (Web, Remote, Mail, Database), and custom port entry.</div>
+        </div>
+        <div class="module-card">
+          <span class="module-icon">≋</span>
+          <div class="module-name">Latency Guide</div>
+          <div class="module-desc">Reference tiers and per-application latency thresholds — what's acceptable for VoIP, gaming, RDP, and more.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY -->
+  <section class="privacy-section" id="privacy">
+    <div class="container">
+      <div class="privacy-grid">
+        <div>
+          <div class="section-eyebrow">Privacy first</div>
+          <h2 class="section-title">Your network data<br/>stays on your network</h2>
+          <p class="section-sub">
+            Hana is built by an IT consulting firm. We know what it means
+            to work on sensitive infrastructure. We designed accordingly.
+          </p>
+          <a href="https://github.com/Proxy-IT/hana-network-utility/blob/main/PRIVACY.md" class="btn-secondary" style="display:inline-flex">
+            Read the Privacy Policy →
+          </a>
+        </div>
+        <div class="privacy-statements">
+          <div class="privacy-statement">
+            <span class="privacy-icon">🔒</span>
+            <div class="privacy-text">
+              <strong>No telemetry, ever</strong>
+              Hana never phones home. There are no usage analytics, crash reporters, or background connections of any kind.
+            </div>
+          </div>
+          <div class="privacy-statement">
+            <span class="privacy-icon">📡</span>
+            <div class="privacy-text">
+              <strong>Outbound requests on demand only</strong>
+              Network requests are made only when you explicitly trigger them. IP Info, DNS, and WhoIs queries go to public APIs — only when you ask.
+            </div>
+          </div>
+          <div class="privacy-statement">
+            <span class="privacy-icon">👁</span>
+            <div class="privacy-text">
+              <strong>Fully open source</strong>
+              Every line of code is on GitHub. You don't have to trust our privacy claims — you can verify them yourself.
+            </div>
+          </div>
+          <div class="privacy-statement">
+            <span class="privacy-icon">🚫</span>
+            <div class="privacy-text">
+              <strong>No ads, no accounts, no tracking</strong>
+              Download, install, use. No sign-up required, no license keys for personal use, no banner ads.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- INSTALL -->
+  <section id="install">
+    <div class="container">
+      <div class="section-eyebrow">Get started</div>
+      <h2 class="section-title">Install in under a minute</h2>
+      <p class="section-sub">
+        No dependencies, no command line required. Download, install, open.
+      </p>
+
+      <div class="install-grid">
+        <!-- Windows -->
+        <div class="install-card">
+          <div class="install-platform">
+            <span class="install-platform-icon">🪟</span>
+            <span class="install-platform-name">Windows</span>
+          </div>
+          <div class="install-steps">
+            <div class="install-step">
+              <span class="step-num">1</span>
+              Download the <code style="font-family:var(--mono);color:var(--cyan);font-size:12px">.exe</code> installer from the link below
+            </div>
+            <div class="install-step">
+              <span class="step-num">2</span>
+              Run the installer and follow the prompts
+            </div>
+            <div class="install-step">
+              <span class="step-num">3</span>
+              Launch Hana from the Start Menu
+            </div>
+          </div>
+          <div class="install-note">
+            ⚠ Windows SmartScreen may show a warning on first launch.<br/>
+            Click <strong>More info → Run anyway</strong>. This is expected for unsigned apps and is safe.
+          </div>
+          <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-primary" style="width:100%;justify-content:center">
+            ↓ Download for Windows
+          </a>
+        </div>
+
+        <!-- Mac -->
+        <div class="install-card">
+          <div class="install-platform">
+            <span class="install-platform-icon">🍎</span>
+            <span class="install-platform-name">macOS</span>
+          </div>
+          <div class="install-steps">
+            <div class="install-step">
+              <span class="step-num">1</span>
+              Download the correct <code style="font-family:var(--mono);color:var(--cyan);font-size:12px">.dmg</code> — <strong style="color:var(--text-primary)">arm64</strong> for Apple Silicon (M1–M4), standard for Intel
+            </div>
+            <div class="install-step">
+              <span class="step-num">2</span>
+              Open the DMG and drag Hana to Applications
+            </div>
+            <div class="install-step">
+              <span class="step-num">3</span>
+              <strong style="color:var(--text-primary)">Right-click</strong> the app → Open → click Open in the dialog
+            </div>
+          </div>
+          <div class="install-note">
+            ⚠ macOS Gatekeeper blocks unsigned apps on first launch.<br/>
+            Right-click → Open bypasses this. Or go to <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>.<br/>
+            Apple notarization is coming — this step will be removed in a future release.
+          </div>
+          <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-secondary" style="width:100%;justify-content:center">
+            ↓ Download for Mac
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">
+        <div style="width:32px;height:32px;border-radius:50%;border:1.5px solid rgba(0,212,255,0.3);background:#0D1525;display:flex;align-items:center;justify-content:center;"><span style="width:8px;height:8px;border-radius:50%;background:#00D4FF;display:block;box-shadow:0 0 8px rgba(0,212,255,0.6);"></span></div>
+        <div>
+          <div class="footer-brand-text">Hana — Network Utility</div>
+          <div class="footer-brand-sub">A free tool by <a href="https://proxy-it.co" style="color:var(--cyan);text-decoration:none">Proxy-IT LLC</a></div>
+        </div>
+      </div>
+
+      <ul class="footer-links">
+        <li><a href="https://github.com/Proxy-IT/hana-network-utility">GitHub</a></li>
+        <li><a href="https://github.com/Proxy-IT/hana-network-utility/releases">Releases</a></li>
+        <li><a href="https://github.com/Proxy-IT/hana-network-utility/blob/main/CHANGELOG.md">Changelog</a></li>
+        <li><a href="https://github.com/Proxy-IT/hana-network-utility/blob/main/TERMS.md">Terms</a></li>
+        <li><a href="https://github.com/Proxy-IT/hana-network-utility/blob/main/PRIVACY.md">Privacy</a></li>
+        <li><a href="https://proxy-it.co">Proxy-IT</a></li>
+      </ul>
+
+      <div class="footer-copy">v1.7.1 · GPL v3.0 · © 2026 Proxy-IT LLC</div>
+    </div>
+  </footer>
+
+</body>
+</html>
