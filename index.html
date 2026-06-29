@@ -11,6 +11,24 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-C14CJSNMVK"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-C14CJSNMVK');
+
+    // Track download button clicks as conversion events
+    function trackDownload(platform) {
+      gtag('event', 'download_click', {
+        event_category: 'Downloads',
+        event_label: platform,
+        platform: platform,
+      });
+    }
+  </script>
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -578,7 +596,7 @@
       <li><a href="#privacy">Privacy</a></li>
       <li><a href="#install">Install</a></li>
       <li><a href="https://proxy-it.co">Proxy-IT</a></li>
-      <li><a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="nav-cta">↓ Download</a></li>
+      <li><a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="nav-cta" onclick="trackDownload('nav')">↓ Download</a></li>
     </ul>
   </nav>
 
@@ -603,7 +621,7 @@
       </p>
 
       <div class="hero-actions">
-        <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-primary">
+        <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-primary" onclick="trackDownload('windows-hero')">
           ↓ Download for Windows
         </a>
         <a href="https://github.com/Proxy-IT/hana-network-utility" class="btn-secondary">
@@ -841,7 +859,7 @@
             ⚠ Windows SmartScreen may show a warning on first launch.<br/>
             Click <strong>More info → Run anyway</strong>. This is expected for unsigned apps and is safe.
           </div>
-          <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-primary" style="width:100%;justify-content:center">
+          <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-primary" style="width:100%;justify-content:center" onclick="trackDownload('windows-install')">
             ↓ Download for Windows
           </a>
         </div>
@@ -871,7 +889,7 @@
             Right-click → Open bypasses this. Or go to <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>.<br/>
             Apple notarization is coming — this step will be removed in a future release.
           </div>
-          <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-secondary" style="width:100%;justify-content:center">
+          <a href="https://github.com/Proxy-IT/hana-network-utility/releases/latest" class="btn-secondary" style="width:100%;justify-content:center" onclick="trackDownload('mac-install')">
             ↓ Download for Mac
           </a>
         </div>
