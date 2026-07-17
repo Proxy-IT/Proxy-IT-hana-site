@@ -324,7 +324,7 @@
 
     .screenshot-thumbs {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(5, 1fr);
       gap: 12px;
       margin-bottom: 80px;
     }
@@ -340,6 +340,17 @@
       border-color: var(--cyan-border);
       transform: translateY(-2px);
       box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .screenshot-thumb:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 2px;
+    }
+    .screenshot-thumb.active {
+      border-color: var(--cyan);
+      box-shadow: 0 0 0 1px var(--cyan-border), 0 8px 24px rgba(0,0,0,0.4);
+    }
+    .screenshot-thumb.active .screenshot-thumb-label {
+      color: var(--cyan);
     }
     .screenshot-thumb img {
       width: 100%;
@@ -692,25 +703,29 @@
 
       <!-- Featured screenshot -->
       <div class="featured-screenshot">
-        <img src="screenshots/ping.png" alt="Hana Ping module showing continuous ping with live RTT graph" loading="lazy" />
-        <span class="featured-screenshot-label">◎ Ping — Continuous mode with live RTT graph</span>
+        <img id="featuredScreenshot" src="screenshots/ping.png" alt="Hana Ping module showing continuous ping with live RTT graph" loading="lazy" />
+        <span class="featured-screenshot-label" id="featuredScreenshotLabel">◎ Ping — Continuous mode with live RTT graph</span>
       </div>
 
       <!-- Thumbnail row -->
       <div class="screenshot-thumbs">
-        <div class="screenshot-thumb">
+        <div class="screenshot-thumb active" data-caption="◎ Ping — Continuous mode with live RTT graph" onclick="showScreenshot(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showScreenshot(this);}" tabindex="0" role="button" aria-label="View Ping screenshot">
+          <img src="screenshots/ping.png" alt="Hana Ping module showing continuous ping with live RTT graph" loading="lazy" />
+          <div class="screenshot-thumb-label">◎ Ping</div>
+        </div>
+        <div class="screenshot-thumb" data-caption="⊛ Multi-Ping" onclick="showScreenshot(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showScreenshot(this);}" tabindex="0" role="button" aria-label="View Multi-Ping screenshot">
           <img src="screenshots/multiping.png" alt="Multi-Ping showing 2 up 1 down" loading="lazy" />
           <div class="screenshot-thumb-label">⊛ Multi-Ping</div>
         </div>
-        <div class="screenshot-thumb">
+        <div class="screenshot-thumb" data-caption="⊞ Subnet Sweep" onclick="showScreenshot(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showScreenshot(this);}" tabindex="0" role="button" aria-label="View Subnet Sweep screenshot">
           <img src="screenshots/sweep.png" alt="Subnet Sweep CIDR scan in progress" loading="lazy" />
           <div class="screenshot-thumb-label">⊞ Subnet Sweep</div>
         </div>
-        <div class="screenshot-thumb">
+        <div class="screenshot-thumb" data-caption="⊘ Port Scanner" onclick="showScreenshot(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showScreenshot(this);}" tabindex="0" role="button" aria-label="View Port Scanner screenshot">
           <img src="screenshots/portscan.png" alt="Port Scanner results" loading="lazy" />
           <div class="screenshot-thumb-label">⊘ Port Scanner</div>
         </div>
-        <div class="screenshot-thumb">
+        <div class="screenshot-thumb" data-caption="◈ DNS Lookup" onclick="showScreenshot(this)" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showScreenshot(this);}" tabindex="0" role="button" aria-label="View DNS Lookup screenshot">
           <img src="screenshots/dns.png" alt="DNS Lookup results" loading="lazy" />
           <div class="screenshot-thumb-label">◈ DNS Lookup</div>
         </div>
@@ -723,7 +738,7 @@
     <div class="container">
       <div class="stats-bar">
         <div class="stat">
-          <div class="stat-value">9</div>
+          <div class="stat-value">10</div>
           <div class="stat-label">Modules</div>
         </div>
         <div class="stat">
@@ -944,6 +959,23 @@
       <div class="footer-copy">v1.10.0 · GPL v3.0 · © 2026 Proxy-IT LLC</div>
     </div>
   </footer>
+
+  <script>
+    function showScreenshot(thumb) {
+      var img = thumb.querySelector('img');
+      var featured = document.getElementById('featuredScreenshot');
+      var label = document.getElementById('featuredScreenshotLabel');
+      featured.src = img.src;
+      featured.alt = img.alt;
+      label.textContent = thumb.getAttribute('data-caption');
+
+      var thumbs = document.querySelectorAll('.screenshot-thumb');
+      for (var i = 0; i < thumbs.length; i++) {
+        thumbs[i].classList.remove('active');
+      }
+      thumb.classList.add('active');
+    }
+  </script>
 
 </body>
 </html>
